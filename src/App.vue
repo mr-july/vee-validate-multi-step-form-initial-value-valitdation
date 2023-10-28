@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
-import { Field, ErrorMessage, useField, useForm } from 'vee-validate'
-import * as yup from 'yup'
+import { ref, computed } from "vue";
+import { Field, ErrorMessage, useForm } from "vee-validate";
+import * as yup from "yup";
 
-import NotesSection from './components/NotesSection.vue'
-import PasswordSection from './components/PasswordSection.vue'
+import { toTypedSchema } from "./yup";
 
-const currentStep = ref(0)
+import NotesSection from "./components/NotesSection.vue";
+import PasswordSection from "./components/PasswordSection.vue";
+
+const currentStep = ref(0);
 
 // Each step should have its own validation schema
 const schemas = [
@@ -23,56 +25,58 @@ const schemas = [
       .string()
       .required()
       .min(6)
-      .oneOf([yup.ref('password')], 'Passwords must match'),
+      .oneOf([yup.ref("password")], "Passwords must match"),
   },
   {
     address: yup.string().required(),
     postalCode: yup
       .string()
       .required()
-      .matches(/^[0-9]+$/, 'Must be numeric'),
+      .matches(/^[0-9]+$/, "Must be numeric"),
   },
   {
     terms: yup.bool().required().equals([true]),
   },
-]
+];
 
 const currentSchema = computed(() => {
-  return yup.object(
-    schemas
-      .slice(0, currentStep.value + 1)
-      .reduce((akk, it) => ({ ...akk, ...it }), {})
-  )
-})
+  return toTypedSchema(
+    yup.object(
+      schemas
+        .slice(0, currentStep.value + 1)
+        .reduce((akk, it) => ({ ...akk, ...it }), {}),
+    ),
+  );
+});
 
 const formContext = useForm({
   validationSchema: currentSchema,
   keepValuesOnUnmount: true,
   initialValues: {
-    name: 'user',
-    email: 'user@aol.com',
+    name: "user",
+    email: "user@aol.com",
     notes: [],
-    password: '',
+    password: "",
   },
-})
+});
 
-const { handleSubmit, values, errors } = formContext
+const { handleSubmit, values, errors } = formContext;
 
 const nextStep = handleSubmit(() => {
   if (currentStep.value === schemas.length) {
-    console.log('Done: ', JSON.stringify(values, null, 2))
-    return
+    console.log("Done: ", JSON.stringify(values, null, 2));
+    return;
   }
 
-  currentStep.value++
-})
+  currentStep.value++;
+});
 
 function prevStep() {
   if (currentStep.value <= 0) {
-    return
+    return;
   }
 
-  currentStep.value--
+  currentStep.value--;
 }
 
 // This is a workaround for the problem of validating array values.
@@ -176,7 +180,7 @@ button {
   margin-top: 10px;
 }
 
-button[type='submit'] {
+button[type="submit"] {
   margin-top: 10px;
 }
 
