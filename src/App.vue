@@ -79,8 +79,6 @@ function prevStep() {
   currentStep.value--;
 }
 
-window.console("Starting...");
-
 // This is a workaround for the problem of validating array values.
 // The `notes' field is initially an empty array (`[]`),
 // but it is validated even though it is not touched
