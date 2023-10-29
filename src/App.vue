@@ -72,7 +72,7 @@ const nextStep = handleSubmit(
     currentStep.value++;
   },
   (vCtx) => {
-    console.error("Validation failed", vCtx);
+    console.warn("Validation failed", vCtx);
   },
 );
 
