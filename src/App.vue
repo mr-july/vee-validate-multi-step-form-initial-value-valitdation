@@ -62,14 +62,19 @@ const formContext = useForm({
 
 const { handleSubmit, values, errors } = formContext;
 
-const nextStep = handleSubmit(() => {
-  if (currentStep.value === schemas.length) {
-    console.log("Done: ", JSON.stringify(values, null, 2));
-    return;
-  }
+const nextStep = handleSubmit(
+  () => {
+    if (currentStep.value === schemas.length) {
+      console.log("Done: ", JSON.stringify(values, null, 2));
+      return;
+    }
 
-  currentStep.value++;
-});
+    currentStep.value++;
+  },
+  (vCtx) => {
+    console.error("Validation failed", vCtx);
+  },
+);
 
 function prevStep() {
   if (currentStep.value <= 0) {
@@ -111,7 +116,7 @@ function prevStep() {
     </details>
     <details open>
       <summary>Form Errors</summary>
-      <pre v-text="formContext.errors" />
+      <pre v-text="formContext.errorBag" />
     </details>
 
     <form @submit.prevent="nextStep">
